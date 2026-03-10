@@ -28,10 +28,22 @@ export const MOCK_WORLD_NEWS: NewsArticle[] = [
   { id: 'w-10', headline: 'Climate summit produces binding agreement on methane emissions reduction', source: 'Guardian', time: '10h ago', url: 'https://theguardian.com' },
 ];
 
+function normalizeHeadline(headline: string): string {
+  return headline.trim().toLowerCase().slice(0, 120);
+}
+
 export function parseNewsDataResponse(data: any, category: 'us' | 'world'): NewsArticle[] {
   if (!data?.results) return category === 'us' ? MOCK_US_NEWS : MOCK_WORLD_NEWS;
 
-  return data.results.slice(0, 10).map((item: any, i: number) => {
+  const seen = new Set<string>();
+  const articles: NewsArticle[] = [];
+
+  for (const item of data.results) {
+    const headline = item.title ?? 'Untitled';
+    const key = normalizeHeadline(headline);
+    if (seen.has(key)) continue; // skip syndicated duplicates
+    seen.add(key);
+
     const pub = item.pubDate ? new Date(item.pubDate) : null;
     const now = new Date();
     const diffMin = pub ? Math.floor((now.getTime() - pub.getTime()) / 60000) : 0;
@@ -40,13 +52,17 @@ export function parseNewsDataResponse(data: any, category: 'us' | 'world'): News
     else if (diffMin < 1440) timeStr = `${Math.floor(diffMin / 60)}h ago`;
     else timeStr = pub?.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) ?? 'recently';
 
-    return {
-      id: item.article_id ?? `${category}-${i}`,
-      headline: item.title ?? 'Untitled',
+    articles.push({
+      id: item.article_id ?? `${category}-${articles.length}`,
+      headline,
       source: item.source_name ?? item.source_id ?? 'Unknown',
       time: timeStr,
       url: item.link ?? '#',
       imageUrl: item.image_url ?? undefined,
-    };
-  });
+    });
+
+    if (articles.length >= 10) break;
+  }
+
+  return articles.length > 0 ? articles : category === 'us' ? MOCK_US_NEWS : MOCK_WORLD_NEWS;
 }

@@ -21,6 +21,7 @@ export async function GET(req: NextRequest) {
   const params = new URLSearchParams({
     apikey: apiKey,
     language: 'en',
+    removeduplicate: '1', // reduce syndicated copies of same story
     ...(category === 'us' ? { country: 'us' } : { prioritydomain: 'top' }),
   });
 
