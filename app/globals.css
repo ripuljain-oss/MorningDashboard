@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+:root {
+  --font-sans:    'DM Sans', system-ui, sans-serif;
+  --font-mono:    'DM Mono', monospace;
+  --font-display: 'Instrument Serif', serif;
+  --bg:           #0b0d11;
+  --surface:      #13161d;
+  --surface2:     #1a1e28;
+  --surface3:     #1f2434;
+  --border:       #242836;
+  --border2:      #2e3449;
+  --accent:       #3b82f6;
+  --accent2:      #60a5fa;
+  --accent-dim:   rgba(59,130,246,0.15);
+  --green:        #22c55e;
+  --green-dim:    rgba(34,197,94,0.12);
+  --green-border: rgba(34,197,94,0.25);
+  --text:         #e2e8f0;
+  --text-muted:   #64748b;
+  --text-subtle:  #334155;
+  --text-dim:     #94a3b8;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{color-scheme:dark}
+body{background:var(--bg);color:var(--text);font-family:var(--font-sans);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;font-family:inherit}
+
+/* HEADER */
+.site-header{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.header-left{display:flex;align-items:baseline;gap:16px}
+.logo{font-family:var(--font-display);font-style:italic;font-size:21px;color:var(--text);letter-spacing:-0.3px}
+.logo-dot{color:var(--accent2)}
+.live-clock{font-family:var(--font-mono);font-size:12px;color:var(--text-muted);letter-spacing:.3px}
+.header-right{display:flex;align-items:center;gap:12px}
+.live-indicator{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10px;color:var(--green);letter-spacing:1px;text-transform:uppercase}
+.live-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+.last-refresh{font-family:var(--font-mono);font-size:10px;color:var(--text-subtle)}
+.refresh-btn{display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);padding:6px 14px;border-radius:6px;font-size:12px;font-weight:500;transition:all .2s}
+.refresh-btn:hover{color:var(--text);border-color:var(--accent);background:var(--accent-dim)}
+
+/* LAYOUT */
+.dashboard{max-width:1440px;margin:0 auto;padding:28px 32px 64px;display:flex;flex-direction:column;gap:20px}
+.section-label{display:flex;align-items:center;gap:12px;font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-subtle)}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.top-row{display:grid;grid-template-columns:400px 1fr;gap:20px;align-items:start}
+.sports-row{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+
+/* WIDGET CARD */
+.widget-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;animation:fadeUp .35s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.widget-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 12px;border-bottom:1px solid var(--border)}
+.widget-title{display:flex;align-items:center;gap:8px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-muted)}
+.widget-icon{font-size:14px}
+.widget-meta{font-family:var(--font-mono);font-size:10px;color:var(--text-subtle)}
+
+/* BADGES */
+.badge{font-family:var(--font-mono);font-size:9px;padding:3px 8px;border-radius:4px;font-weight:600;letter-spacing:.6px;text-transform:uppercase}
+.badge-live{background:var(--green-dim);color:var(--green);border:1px solid var(--green-border);animation:livePulse 2s ease infinite}
+@keyframes livePulse{0%,100%{opacity:1}50%{opacity:.7}}
+.badge-final{background:rgba(100,116,139,.12);color:var(--text-muted);border:1px solid var(--border)}
+.badge-upcoming{background:var(--accent-dim);color:var(--accent2);border:1px solid rgba(59,130,246,.25)}
+
+/* LOADING */
+.loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:180px;gap:12px;color:var(--text-muted);font-size:13px}
+.error-state{display:flex;align-items:center;justify-content:center;height:180px;color:var(--text-muted);font-size:13px}
+.empty-state{padding:40px 20px;text-align:center;color:var(--text-muted);font-size:13px}
+.spinner{width:22px;height:22px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* WEATHER */
+.weather-body{padding:20px}
+.weather-current{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px}
+.weather-temp{font-family:var(--font-display);font-size:76px;line-height:1;color:var(--text);letter-spacing:-4px}
+.weather-condition{font-size:13px;color:var(--text-muted);margin-top:4px}
+.weather-icon-big{font-size:54px;line-height:1;filter:drop-shadow(0 0 24px rgba(255,200,50,.25))}
+.weather-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
+.meta-item{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;display:flex;flex-direction:column;gap:3px}
+.meta-icon{color:var(--text-subtle);margin-bottom:1px}
+.meta-label{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted)}
+.meta-value{font-family:var(--font-mono);font-size:15px;color:var(--text);font-weight:500}
+.forecast-label{font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.forecast-strip{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}
+.forecast-day{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 4px;text-align:center;transition:border-color .2s;cursor:default}
+.forecast-day:hover{border-color:var(--accent)}
+.forecast-day-name{font-family:var(--font-mono);font-size:8px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+.forecast-day-icon{font-size:16px;margin-bottom:5px;line-height:1}
+.forecast-day-hi{font-size:11px;font-weight:600;color:var(--text)}
+.forecast-day-lo{font-size:10px;color:var(--text-muted)}
+
+/* NEWS */
+.news-tabs{display:flex;padding:0 18px;border-bottom:1px solid var(--border)}
+.news-tab{padding:11px 16px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s}
+.news-tab.active{color:var(--accent2);border-bottom-color:var(--accent2)}
+.news-tab:hover:not(.active){color:var(--text)}
+.news-list{max-height:500px;overflow-y:auto}
+.news-list::-webkit-scrollbar{width:3px}
+.news-list::-webkit-scrollbar-track{background:transparent}
+.news-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+.news-item{display:flex;align-items:flex-start;gap:12px;padding:13px 18px;border-bottom:1px solid var(--border);transition:background .15s;cursor:pointer}
+.news-item:hover{background:var(--surface2)}
+.news-item:last-child{border-bottom:none}
+.news-num{font-family:var(--font-mono);font-size:10px;color:var(--text-subtle);min-width:20px;padding-top:2px;flex-shrink:0}
+.news-content{flex:1;min-width:0}
+.news-headline{font-size:13px;font-weight:500;color:var(--text);line-height:1.45;margin-bottom:5px}
+.news-item-meta{display:flex;align-items:center;gap:8px}
+.news-source{font-size:10px;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.5px}
+.news-time{font-family:var(--font-mono);font-size:10px;color:var(--text-muted)}
+.news-arrow{color:var(--text-subtle);flex-shrink:0;margin-top:3px;transition:transform .2s,color .2s}
+.news-item:hover .news-arrow{color:var(--accent2);transform:translateX(2px)}
+
+/* SPORTS */
+.sport-body{padding:14px 16px}
+.team-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.team-info{display:flex;align-items:center;gap:10px}
+.team-logo{width:36px;height:36px;border-radius:8px;border:1px solid transparent;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.team-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap}
+.team-league{font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px}
+.game-score{font-family:var(--font-mono);font-size:20px;font-weight:500;color:var(--text);letter-spacing:-1px;flex-shrink:0}
+.game-score.win{color:var(--green)}
+.game-score.upcoming-score{font-size:14px;color:var(--text-muted)}
+.game-details{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+.game-opponent{font-size:12px;color:var(--text);margin-bottom:3px;font-weight:500}
+.game-opponent.muted{color:var(--text-muted)}
+.game-info{font-family:var(--font-mono);font-size:10px;color:var(--text-muted)}
+
+/* RESPONSIVE */
+@media(max-width:1200px){.sports-row{grid-template-columns:repeat(3,1fr)}.forecast-strip{grid-template-columns:repeat(7,1fr)}}
+@media(max-width:960px){.top-row{grid-template-columns:1fr}}
+@media(max-width:768px){.dashboard{padding:16px 16px 48px;gap:16px}.site-header{padding:12px 16px}.sports-row{grid-template-columns:1fr 1fr}.last-refresh{display:none}}
+@media(max-width:480px){.sports-row{grid-template-columns:1fr}.forecast-strip{grid-template-columns:repeat(5,1fr)}}
