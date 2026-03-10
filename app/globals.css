@@ -49,6 +49,29 @@ button{cursor:pointer;font-family:inherit}
 .top-row{display:grid;grid-template-columns:400px 1fr;gap:20px;align-items:start}
 .sports-row{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
 
+/* TODAY CARD (Daily focus) */
+.today-card{grid-column:1/-1}
+.today-body{padding:20px 20px 24px;display:flex;flex-direction:column;gap:20px}
+.today-loading{height:120px}
+.today-weather-row{min-height:2.5em}
+.today-summary{font-size:15px;line-height:1.5;color:var(--text);margin:0}
+.today-summary-muted{font-size:13px;color:var(--text-muted);margin:0}
+.today-tomorrow-label{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted)}
+.today-headlines{display:flex;flex-direction:column;gap:8px}
+.today-headlines-label{font-family:var(--font-mono);font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted)}
+.today-headlines-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.today-headline-link{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-radius:6px;transition:background .15s;color:inherit;text-decoration:none}
+.today-headline-link:hover{background:var(--surface2)}
+.today-headline-text{flex:1;font-size:13px;font-weight:500;color:var(--text);line-height:1.4}
+.today-headline-arrow{color:var(--text-subtle);flex-shrink:0;margin-top:2px}
+.today-headline-link:hover .today-headline-arrow{color:var(--accent2)}
+.today-headline-meta{font-family:var(--font-mono);font-size:10px;color:var(--text-muted);padding-left:0;display:block;margin-top:2px}
+.today-note-wrap{display:flex;flex-direction:column;gap:8px}
+.today-note-label{font-family:var(--font-mono);font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted)}
+.today-note-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:var(--font-sans);font-size:13px;color:var(--text);resize:vertical;min-height:72px;transition:border-color .2s}
+.today-note-input::placeholder{color:var(--text-subtle)}
+.today-note-input:focus{outline:none;border-color:var(--accent)}
+
 /* WIDGET CARD */
 .widget-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;animation:fadeUp .35s ease both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
@@ -130,5 +153,5 @@ button{cursor:pointer;font-family:inherit}
 /* RESPONSIVE */
 @media(max-width:1200px){.sports-row{grid-template-columns:repeat(3,1fr)}.forecast-strip{grid-template-columns:repeat(7,1fr)}}
 @media(max-width:960px){.top-row{grid-template-columns:1fr}}
-@media(max-width:768px){.dashboard{padding:16px 16px 48px;gap:16px}.site-header{padding:12px 16px}.sports-row{grid-template-columns:1fr 1fr}.last-refresh{display:none}}
+@media(max-width:768px){.dashboard{padding:16px 16px 48px;gap:16px}.site-header{padding:12px 16px}.sports-row{grid-template-columns:1fr 1fr}.last-refresh{display:none}.today-body{padding:16px}}
 @media(max-width:480px){.sports-row{grid-template-columns:1fr}.forecast-strip{grid-template-columns:repeat(5,1fr)}}
