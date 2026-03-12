@@ -56,4 +56,31 @@ export interface SportGame {
   homeAway?: 'home' | 'away';
   statusDetail?: string;
   gameDate?: string;
+  gameId?: string;
+  sport?: string;
+  leagueSlug?: string;
+}
+
+export interface BoxScoreTeam {
+  name: string;
+  abbr: string;
+  score: number;
+  color: string;
+  linescores: number[];
+}
+
+export interface BoxScoreStat {
+  label: string;
+  home: string;
+  away: string;
+}
+
+export interface BoxScore {
+  homeTeam: BoxScoreTeam;
+  awayTeam: BoxScoreTeam;
+  status: string;
+  statusDetail: string;
+  periodLabel: string;
+  periods: string[];
+  stats: BoxScoreStat[];
 }

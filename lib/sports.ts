@@ -129,5 +129,8 @@ export function parseEspnGame(events: any[], team: TeamConfig): SportGame {
       ? timeAgo(game.date)
       : formatGameDate(game.date),
     gameDate: game.date,
+    gameId: game.id,
+    sport: team.sport,
+    leagueSlug: team.leagueSlug,
   };
 }

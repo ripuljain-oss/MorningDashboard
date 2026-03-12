@@ -6,6 +6,7 @@ import TodayCard from '@/components/TodayCard';
 import WeatherWidget from '@/components/WeatherWidget';
 import NewsWidget from '@/components/NewsWidget';
 import SportsWidget from '@/components/SportsWidget';
+import FocusTimer from '@/components/FocusTimer';
 import type { TimeOfDay } from '@/components/TodayCard';
 
 function getTimeOfDay(): TimeOfDay {
@@ -73,6 +74,11 @@ export default function DashboardPage() {
             </div>
           </>
         )}
+
+        <div className="section-label"><span>Focus</span></div>
+        <div className="focus-row">
+          <FocusTimer />
+        </div>
       </main>
     </>
   );
