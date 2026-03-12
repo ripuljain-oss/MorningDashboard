@@ -21,7 +21,21 @@ function colorFromTeam(team: any): string {
 }
 
 function parseLinescores(competitor: any): number[] {
-  return (competitor?.linescores ?? []).map((ls: any) => Number(ls.value ?? 0));
+  // Baseball uses displayValue; other sports use value
+  return (competitor?.linescores ?? []).map((ls: any) =>
+    Number(ls.displayValue ?? ls.value ?? 0)
+  );
+}
+
+// Flatten grouped stats (baseball: { name:'batting', stats:[...] })
+// or flat stats (NBA/NHL/NFL: [{ name, displayValue, label }])
+function flattenStats(raw: any[]): any[] {
+  if (!Array.isArray(raw) || raw.length === 0) return [];
+  // Grouped format: each item has a nested `stats` array
+  if (Array.isArray(raw[0]?.stats)) {
+    return raw.flatMap((group: any) => group.stats ?? []);
+  }
+  return raw;
 }
 
 function parseStats(boxscoreTeams: any[], homeId: string): BoxScoreStat[] {
@@ -30,13 +44,17 @@ function parseStats(boxscoreTeams: any[], homeId: string): BoxScoreStat[] {
   const home = boxscoreTeams.find((t: any) => String(t.team?.id) === homeId) ?? boxscoreTeams[0];
   const away = boxscoreTeams.find((t: any) => String(t.team?.id) !== homeId) ?? boxscoreTeams[1];
 
-  const homeStats: any[] = home?.statistics ?? [];
-  const awayStats: any[] = away?.statistics ?? [];
+  const homeStats = flattenStats(home?.statistics ?? []);
+  const awayStats = flattenStats(away?.statistics ?? []);
 
   const WANTED = [
+    // NBA
     'fieldGoalPct', 'threePointFieldGoalPct', 'totalRebounds', 'assists', 'turnovers',
+    // NFL
     'totalYards', 'passingYards', 'rushingYards',
-    'hits', 'errors',
+    // MLB
+    'hits', 'runs', 'homeRuns', 'walks', 'strikeouts',
+    // NHL
     'shots', 'savePct',
   ];
 
@@ -46,24 +64,12 @@ function parseStats(boxscoreTeams: any[], homeId: string): BoxScoreStat[] {
     const as_ = awayStats.find((s: any) => s.name === key);
     if (hs && as_) {
       results.push({
-        label: hs.label ?? hs.name,
+        label: hs.displayName ?? hs.shortDisplayName ?? hs.label ?? hs.name,
         home: hs.displayValue ?? String(hs.value ?? ''),
         away: as_.displayValue ?? String(as_.value ?? ''),
       });
     }
     if (results.length >= 5) break;
-  }
-
-  // Fallback: take first 5 stats from home team if none matched
-  if (results.length === 0) {
-    for (const hs of homeStats.slice(0, 5)) {
-      const as_ = awayStats.find((s: any) => s.name === hs.name);
-      results.push({
-        label: hs.label ?? hs.name,
-        home: hs.displayValue ?? String(hs.value ?? ''),
-        away: as_?.displayValue ?? as_?.value ?? '–',
-      });
-    }
   }
 
   return results;
@@ -98,11 +104,12 @@ export async function GET(req: NextRequest) {
     const awayLinescores = parseLinescores(awayComp);
     const numPeriods = Math.max(homeLinescores.length, awayLinescores.length);
 
+    const regularPeriods = sport === 'baseball' ? 9 : sport === 'hockey' ? 3 : 4;
     const periods = Array.from({ length: numPeriods }, (_, i) => {
-      // Label OT periods properly
-      const regularPeriods = sport === 'baseball' ? 9 : sport === 'hockey' ? 3 : 4;
       if (i < regularPeriods) return periodLabel(sport, i);
-      return `OT${i - regularPeriods > 0 ? i - regularPeriods + 1 : ''}`;
+      const extra = i - regularPeriods + 1;
+      if (sport === 'baseball') return `E${extra}`;
+      return `OT${extra > 1 ? extra : ''}`;
     });
 
     const homeTeam: BoxScoreTeam = {
