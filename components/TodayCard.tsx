@@ -1,12 +1,10 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { WeatherData } from '@/types';
 import { NewsArticle } from '@/types';
 import { getWeatherSummary } from '@/lib/weatherSummary';
 import { ExternalLink } from 'lucide-react';
-
-const NOTE_STORAGE_KEY = 'morning-dashboard-today-note';
 
 export type TimeOfDay = 'morning' | 'evening' | 'day';
 
@@ -15,36 +13,10 @@ interface TodayCardProps {
   refreshKey: number;
 }
 
-function getNoteKey(): string {
-  const today = new Date().toDateString();
-  return `${NOTE_STORAGE_KEY}-${today}`;
-}
-
 export default function TodayCard({ timeOfDay, refreshKey }: TodayCardProps) {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [headlines, setHeadlines] = useState<NewsArticle[]>([]);
-  const [note, setNote] = useState('');
   const [loading, setLoading] = useState(true);
-
-  // Load note from localStorage (keyed by date so each day gets a fresh note)
-  useEffect(() => {
-    const key = getNoteKey();
-    try {
-      const saved = localStorage.getItem(key);
-      setNote(saved ?? '');
-    } catch {
-      setNote('');
-    }
-  }, []);
-
-  const saveNote = useCallback((value: string) => {
-    setNote(value);
-    try {
-      localStorage.setItem(getNoteKey(), value);
-    } catch {
-      // ignore quota or private mode
-    }
-  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -148,18 +120,6 @@ export default function TodayCard({ timeOfDay, refreshKey }: TodayCardProps) {
               )}
             </div>
 
-            {/* Today's note */}
-            <div className="today-note-wrap">
-              <label htmlFor="today-note" className="today-note-label">Today&apos;s note</label>
-              <textarea
-                id="today-note"
-                className="today-note-input"
-                placeholder="Set an intention, reminder, or focus for the day…"
-                value={note}
-                onChange={(e) => saveNote(e.target.value)}
-                rows={3}
-              />
-            </div>
           </>
         )}
       </div>

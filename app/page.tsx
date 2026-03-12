@@ -20,6 +20,20 @@ export default function DashboardPage() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>(() => getTimeOfDay());
+  const [clock, setClock] = useState({ time: '', date: '' });
+
+  useEffect(() => {
+    const update = () => {
+      const now = new Date();
+      setClock({
+        time: now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }),
+        date: now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }),
+      });
+    };
+    update();
+    const t = setInterval(update, 1000);
+    return () => clearInterval(t);
+  }, []);
 
   const handleRefresh = () => {
     setRefreshKey((k) => k + 1);
@@ -47,6 +61,11 @@ export default function DashboardPage() {
     <>
       <Header onRefresh={handleRefresh} lastRefreshed={lastRefreshed} />
       <main className="dashboard">
+        <div className="hero-clock">
+          <div className="hero-time">{clock.time}</div>
+          <div className="hero-date">{clock.date}</div>
+        </div>
+
         <TodayCard timeOfDay={timeOfDay} refreshKey={refreshKey} />
 
         {isEvening ? (
