@@ -61,9 +61,12 @@ export default function DashboardPage() {
     <>
       <Header onRefresh={handleRefresh} lastRefreshed={lastRefreshed} />
       <main className="dashboard">
-        <div className="hero-clock">
-          <div className="hero-time">{clock.time}</div>
-          <div className="hero-date">{clock.date}</div>
+        <div className="hero-top">
+          <div className="hero-clock">
+            <div className="hero-time">{clock.time}</div>
+            <div className="hero-date">{clock.date}</div>
+          </div>
+          <FocusTimer />
         </div>
 
         <TodayCard timeOfDay={timeOfDay} refreshKey={refreshKey} />
@@ -94,10 +97,7 @@ export default function DashboardPage() {
           </>
         )}
 
-        <div className="section-label"><span>Focus</span></div>
-        <div className="focus-row">
-          <FocusTimer />
-        </div>
+
       </main>
     </>
   );
